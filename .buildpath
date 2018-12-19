@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<buildpath>
+	<buildpathentry kind="src" path=""/>
+	<buildpathentry kind="con" path="com.intersystems.atelier.core.SERVER_CONTAINER/ENS2017v2/TRABAJO20172"/>
+</buildpath>
