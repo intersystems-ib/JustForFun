@@ -1,4 +1,4 @@
-# OpenCode
+# Just for FUN
 ## John Conway's Game of Life
 
 With this class you could simulate Game of Life world that John Conway invented in 1970. We can see how John Conway universe evolves in our terminal just executing:
