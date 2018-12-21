@@ -34,6 +34,13 @@ Property Iterations As %Integer [ InitialExpression = 0 ];
 /// By default, original rules: 2 or 3 to keep alive, 3 for a new born
 Property RulesOfLife As %String [ InitialExpression = "2.3/3" ];
 
+/// Char that represents an alive block when displayed in terminal
+Property AliveChar as %String [Transient, InitialExpression = {$char(14)} ];
+
+/// Char that represents a dead block when displayed in terminal
+Property DeadChar as %String [Transient, InitialExpression = "-"];
+
+
 /// documentation
 Index idxIDKEY On World [ IdKey ];
 
@@ -414,12 +421,13 @@ Method Display(pIteration As %Integer = 0, pFromVector As %String = "", pToVecto
 	set tRowIni = $p(pFromVector,",",2)
 	set tRowFin = $p(pToVector,",",2)
 	
+	write ?(((tColFin - tColIni)\2)-5),"World:[",..World,"] >",pIteration,"<" 
 	for i = tRowIni:1:tRowFin
 	{	
 		write !," "
 		for j = tColIni:1:tColFin
 		{
-			write $case($bit(^OPNLib.Game.CWLF(..World,pIteration,i),j),"1":$c(164),:"-")
+			write $case($bit(^OPNLib.Game.CWLF(..World,pIteration,i),j),"1":..AliveChar,:..DeadChar)
 		}
 	}
 }
@@ -483,24 +491,36 @@ ClassMethod Test(pTest As %DynamicObject = "") as %Status
 {
 	#dim e as %Exception.General
 	#dim tSC as %Status = $$$OK
+	#dim g as OPNLib.Game.ConwayLifeGame
 	
 	try
 	{
 		if '($IsObject(pTest)&&(pTest.%ClassName()="%DynamicObject")) 
 		{
-			set pTest = {"ID":1,"From":0,"To":200,"Iterations":200,"InitialConfig":5,"Rows":80,"Columns":150,"Vector0":"1,1","VectorN":"100,40"}
+			set pTest = {"ID":1,"From":0,"To":200,"Iterations":200,"InitialConfig":5,"Rows":50,"Columns":130,"Vector0":"1,1","VectorN":"100,40","AliveChar":($c(164)),"DeadChar":"-"}
 		}
 		
 		write !,"These are the settings for the test:",!
 		do pTest.%ToJSON()
 		read !,"Press any key to continue... (Ctrl-C to stop)",x
 		
-		set g = ##class(OPNLib.Game.ConwayLifeGame).%OpenId(pTest.ID)
-		
+		If ..%ExistsId(pTest.ID) 
+		{
+			set g = ##class(OPNLib.Game.ConwayLifeGame).%OpenId(pTest.ID)
+		} 
+		else 
+		{
+			write !,"World ID introduced doesn't exist. Creating a new world for you...."
+			set g = ##class(OPNLib.Game.ConwayLifeGame).%New()
+		}	
+			
 		$$$TOE(tSC,$IsObject(g))
 		
 		set g.Rows = pTest.Rows
 		set g.Columns = pTest.Columns
+		
+		set:(pTest.AliveChar'="") g.AliveChar = pTest.AliveChar
+		set:(pTest.DeadChar'="") g.DeadChar = pTest.DeadChar
 		
 		do g.Initialize(pTest.InitialConfig)
 		do g.Iterate(pTest.Iterations)
