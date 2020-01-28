@@ -1,4 +1,29 @@
 # Just for FUN
+
+## Installation
+### Management Portal
+Open Classes section of your IRIS server and import OPNLib/Game/ConwayLifeGame.cls
+### Terminal
+Run IRIS terminal and import the class OPNLib/Game/ConwayLifeGame.cls in a desired namespace:
+```
+USER>d $System.OBJ.Load("OPNLib/Game/ConwayLifeGame.cls")
+```
+### ZPM
+zpm:USER>install conway-lifegame
+
+### Docker
+Open project folder in mac/windows terminal. Start docker:
+```
+$ docker-compose build
+$ docker-compose up -d
+```
+
+### Collaboration
+git clone the repo.
+Run Docker as described in ###Docker section.
+Open the folder in VSCode and start editing.
+
+
 ## John Conway's Game of Life
 
 With this class you could simulate Game of Life world that John Conway invented in 1970. We can see how John Conway universe evolves in our terminal just executing:
